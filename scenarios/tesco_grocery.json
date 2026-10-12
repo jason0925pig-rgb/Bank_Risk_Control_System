@@ -1,0 +1,21 @@
+{
+  "id": "tesco_grocery",
+  "label": "Tesco weekly groceries",
+  "tagline": "Everyday spend at a familiar merchant — should sail through with no friction.",
+  "txn": {
+    "date": "2026-10-13",
+    "time": "18:30",
+    "merchant": "Tesco · Bethnal Green",
+    "category": "Groceries",
+    "amount": 34.87,
+    "currency": "GBP",
+    "city": "London",
+    "country": "GB",
+    "lat": 51.5202,
+    "lng": -0.0525,
+    "method": "Contactless",
+    "card_present": true
+  },
+  "inject_sms": [],
+  "gps_override": null
+}

@@ -1,0 +1,25 @@
+{
+  "id": "phishing_cardtest",
+  "label": "Phishing SMS → card test",
+  "tagline": "Smishing message lands hours before a £1.99 online 'customs fee' at an unseen merchant — a classic card-testing sequence caught by the Communication agent.",
+  "txn": {
+    "date": "2026-10-14",
+    "time": "02:13",
+    "merchant": "UK-Parcel-Customs.Fee Pay",
+    "category": "Other",
+    "amount": 1.99,
+    "currency": "GBP",
+    "city": "—",
+    "country": "GB",
+    "method": "Online",
+    "card_present": false
+  },
+  "inject_sms": [
+    {
+      "t": "2026-10-13 23:40",
+      "from": "+44 7700 900512",
+      "text": "EVRI: Your parcel HLTD. Unpaid customs fee £1.99. Pay now to reschedule: https://evri-fee-pay-secure.info/x"
+    }
+  ],
+  "gps_override": null
+}

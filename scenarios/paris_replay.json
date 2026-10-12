@@ -1,0 +1,26 @@
+{
+  "id": "paris_replay",
+  "label": "Paris weekend · in-person (replay)",
+  "tagline": "Abroad but GPS-consistent: the phone trail follows the cardholder to Paris, so the Context agent does not raise a false positive.",
+  "txn": {
+    "date": "2026-09-26",
+    "time": "13:05",
+    "merchant": "Pret A Manger · Paris Marais",
+    "category": "Coffee",
+    "amount": 6.2,
+    "currency": "GBP",
+    "city": "Paris",
+    "country": "FR",
+    "lat": 48.8614,
+    "lng": 2.3558,
+    "method": "Contactless",
+    "card_present": true
+  },
+  "inject_sms": [],
+  "gps_override": [
+    { "t": "2026-09-26 08:05", "lat": 51.5308, "lng": -0.1241, "label": "St Pancras International" },
+    { "t": "2026-09-26 11:20", "lat": 50.6292, "lng": 3.0573, "label": "Eurostar · near Lille" },
+    { "t": "2026-09-26 12:58", "lat": 48.8809, "lng": 2.3655, "label": "Paris Gare du Nord" },
+    { "t": "2026-09-26 13:03", "lat": 48.8614, "lng": 2.3558, "label": "Le Marais · Paris" }
+  ]
+}

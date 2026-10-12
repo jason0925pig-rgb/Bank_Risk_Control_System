@@ -1,0 +1,21 @@
+{
+  "id": "tuition_2nd",
+  "label": "Tuition instalment £3,900",
+  "tagline": "A big amount is not fraud when it exactly matches an expected instalment to a known payee.",
+  "txn": {
+    "date": "2026-10-15",
+    "time": "10:00",
+    "merchant": "UCL · Tuition Payment",
+    "category": "Education",
+    "amount": 3900.0,
+    "currency": "GBP",
+    "city": "London",
+    "country": "GB",
+    "lat": 51.5226,
+    "lng": -0.1313,
+    "method": "Online",
+    "card_present": false
+  },
+  "inject_sms": [],
+  "gps_override": null
+}

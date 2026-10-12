@@ -1,0 +1,19 @@
+{
+  "id": "octopus_dd",
+  "label": "Octopus Energy direct debit",
+  "tagline": "Recurring utility bill from a merchant seen monthly — a known pattern, not fraud.",
+  "txn": {
+    "date": "2026-10-13",
+    "time": "06:00",
+    "merchant": "Octopus Energy",
+    "category": "Utilities",
+    "amount": 59.8,
+    "currency": "GBP",
+    "city": "London",
+    "country": "GB",
+    "method": "Direct debit",
+    "card_present": false
+  },
+  "inject_sms": [],
+  "gps_override": null
+}

@@ -1,0 +1,22 @@
+{
+  "id": "stolen_wallet",
+  "label": "Stolen wallet · Lagos FX bureau",
+  "tagline": "Flagship case, based on a real incident: wallet stolen in London, thief rushes a foreign-exchange purchase in Nigeria while the victim's phone stays in London. Card must be frozen instantly.",
+  "txn": {
+    "date": "2026-10-12",
+    "time": "21:04",
+    "merchant": "Golden Gateway FX Bureau",
+    "category": "FX / Remittance",
+    "amount": 850.0,
+    "currency": "GBP",
+    "detail": "Buy 1,680,000 NGN · cash pickup",
+    "city": "Lagos",
+    "country": "NG",
+    "lat": 6.4531,
+    "lng": 3.3958,
+    "method": "Chip & PIN",
+    "card_present": true
+  },
+  "inject_sms": [],
+  "gps_override": null
+}

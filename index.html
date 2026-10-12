@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank Risk Control System — Multi-Agent Fraud Detection</title>
+<meta name="description" content="A multi-agent fraud detection system: 4 cooperative LLM-style agents (Triage, Context, Communication, Judge) decide in real time whether to approve or decline every card payment.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- ═══════════════════ TOP BAR ═══════════════════ -->
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🛡️</div>
+    <div class="brand-text">
+      <h1>Bank Risk Control System</h1>
+      <p>Four cooperative agents decide every payment — watch them think in real time.</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <div class="persona-chip" title="Synthetic demo persona">
+      <span class="pc-avatar">JL</span>
+      <span><b>Jason Li</b> · CS MSc @ UCL · London</span>
+    </div>
+    <button class="btn ghost" id="btnAbout">How it works</button>
+    <a class="btn dark" href="https://github.com/jason0925pig-rgb/Bank_Risk_Control_System" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</header>
+
+<!-- ═══════════════════ SCENARIO PICKER ═══════════════════ -->
+<div class="scenario-bar">
+  <div class="sb-inner">
+    <span class="sb-label">Try a scenario</span>
+    <div class="sb-chips" id="scenarioChips"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ STAGE ═══════════════════ -->
+<main class="stage">
+
+  <!-- ── Phone column ── -->
+  <section class="phone-col">
+    <div class="phone" id="phone">
+      <div class="phone-notch"></div>
+      <div class="screen">
+        <div class="statusbar">
+          <span id="clock">21:02</span>
+          <span class="sb-right"><span class="sig">▂▄▆</span><span class="net">Meridian LTE</span><span class="batt">86%</span></span>
+        </div>
+
+        <div id="pushHost"></div>
+
+        <div class="app">
+          <div class="app-head">
+            <div class="app-greet">
+              <span class="avatar">JL</span>
+              <div class="greet-text">
+                <b>Good evening, Jason</b>
+                <small>Meridian Bank · Global Card</small>
+              </div>
+            </div>
+            <span class="app-bell" title="Notifications">🔔</span>
+          </div>
+
+          <div class="card-visual" id="cardVisual">
+            <div class="cv-top">
+              <span class="cv-bank">Meridian Bank</span>
+              <span class="cv-product">GLOBAL</span>
+            </div>
+            <div class="cv-chip"></div>
+            <div class="cv-number">•••• •••• •••• <b>4821</b></div>
+            <div class="cv-bottom">
+              <div class="cv-holder"><small>CARDHOLDER</small><span>JASON LI</span></div>
+              <div class="cv-exp"><small>EXPIRES</small><span>09/29</span></div>
+            </div>
+            <div class="cv-freeze hidden" id="cardFreeze">
+              <span class="lock">❄️</span>
+              <b>Card frozen</b>
+              <small>Protected by Risk Engine</small>
+              <button id="btnUnfreeze">Unfreeze card</button>
+            </div>
+          </div>
+
+          <div class="card-meta">
+            <div><small>Current balance</small><b id="balance">£1,842.60</b></div>
+            <div class="card-meta-right"><small>Limit</small><b>£5,000.00</b></div>
+          </div>
+
+          <div class="section-head">
+            <span>Recent activity</span>
+            <button class="btn newpay" id="btnNewPay">＋ New payment</button>
+          </div>
+          <div class="tx-list" id="txList"></div>
+        </div>
+
+        <div class="tabbar">
+          <span class="tab active">🏠 Home</span>
+          <span class="tab">💳 Cards</span>
+          <span class="tab">📊 Insights</span>
+          <span class="tab">👤 Me</span>
+        </div>
+
+        <!-- in-phone: new payment form -->
+        <div class="inphone-modal hidden" id="payModal">
+          <div class="pm-sheet">
+            <div class="pm-head">
+              <b>Simulate a payment</b>
+              <button class="pm-close" id="btnClosePay">✕</button>
+            </div>
+            <div class="pm-body">
+              <label>Merchant
+                <input type="text" id="fMerchant" placeholder="e.g. Golden Gateway FX Bureau" value="Tesco · Bethnal Green">
+              </label>
+              <div class="pm-row">
+                <label>Category
+                  <select id="fCategory">
+                    <option>Groceries</option><option>Coffee</option><option>Dining</option>
+                    <option>Delivery</option><option>Transport</option><option>Utilities</option>
+                    <option>Telecom</option><option>Housing</option><option>Education</option>
+                    <option>Retail</option><option>Health</option><option>Entertainment</option>
+                    <option>Travel</option><option>FX / Remittance</option><option>Crypto</option>
+                    <option>Gambling</option><option>Other</option>
+                  </select>
+                </label>
+                <label>Amount (£)
+                  <input type="number" id="fAmount" min="0.5" step="0.01" value="34.87">
+                </label>
+              </div>
+              <div class="pm-row">
+                <label>Country
+                  <select id="fCountry">
+                    <option value="GB" selected>🇬🇧 United Kingdom</option>
+                    <option value="FR">🇫🇷 France</option>
+                    <option value="NG">🇳🇬 Nigeria</option>
+                    <option value="US">🇺🇸 United States</option>
+                    <option value="Other">🌐 Other</option>
+                  </select>
+                </label>
+                <label>City
+                  <input type="text" id="fCity" value="London">
+                </label>
+              </div>
+              <div class="pm-row">
+                <label>Time
+                  <input type="time" id="fTime" value="18:30">
+                </label>
+                <label>Method
+                  <select id="fMethod">
+                    <option value="Contactless" selected>Contactless</option>
+                    <option value="Chip & PIN">Chip &amp; PIN</option>
+                    <option value="Online">Online / CNP</option>
+                    <option value="Direct debit">Direct debit</option>
+                  </select>
+                </label>
+              </div>
+              <label class="pm-gps">Cardholder's phone GPS (fraud engine view)
+                <select id="fGps">
+                  <option value="home" selected>Home · Bethnal Green E2</option>
+                  <option value="ucl">UCL campus · WC1</option>
+                  <option value="central">Central London · Oxford St</option>
+                </select>
+              </label>
+              <button class="btn runcheck" id="btnRunCheck">Run risk check ▸</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="phone-caption">All data is synthetic — a fictional cardholder with a fabricated 90-day London spending history.</p>
+  </section>
+
+  <!-- ── Monitor column ── -->
+  <section class="monitor-col">
+    <div class="monitor">
+      <div class="mon-head">
+        <div class="mon-title">
+          <h2><span class="live-dot" id="liveDot"></span>AI Risk Engine</h2>
+          <small>Live agent trace · run <code id="runId">—</code></small>
+        </div>
+        <div class="mon-stats">
+          <span id="statTokens">— tokens</span><i>·</i>
+          <span id="statLatency">— </span><i>·</i>
+          <button class="mini" id="btnSkip" title="Finish animation instantly">Skip ⏭</button>
+          <button class="mini" id="btnReset" title="Clear the trace">Reset</button>
+        </div>
+      </div>
+
+      <div class="pipeline" id="pipeline">
+        <div class="pnode" data-agent="triage"><span class="pdot"></span><small>1 · Triage</small></div>
+        <span class="pline"></span>
+        <div class="pnode" data-agent="context"><span class="pdot"></span><small>2 · Context</small></div>
+        <span class="pline"></span>
+        <div class="pnode" data-agent="comms"><span class="pdot"></span><small>3 · Comms</small></div>
+        <span class="pline"></span>
+        <div class="pnode" data-agent="judge"><span class="pdot"></span><small>4 · Judge</small></div>
+        <span class="pline"></span>
+        <div class="pnode verdict"><span class="pdot"></span><small>Decision</small></div>
+      </div>
+
+      <div class="agent-stack">
+
+        <article class="agent a-triage" id="ag-triage">
+          <header>
+            <span class="ag-emoji">🔍</span>
+            <div class="ag-name"><b>Agent 1 · Triage</b><small>fast tier · cheap screening of every transaction</small></div>
+            <span class="ag-status" id="st-triage">queued</span>
+            <span class="ag-meta mono" id="mt-triage">—</span>
+          </header>
+          <div class="ag-body">
+            <div class="ag-lines" id="ln-triage"></div>
+            <div class="ag-out" id="out-triage"></div>
+          </div>
+        </article>
+
+        <article class="agent a-context" id="ag-context">
+          <header>
+            <span class="ag-emoji">📍</span>
+            <div class="ag-name"><b>Agent 2 · Context</b><small>mid tier · GPS trail vs transaction geo cross-check</small></div>
+            <span class="ag-status" id="st-context">queued</span>
+            <span class="ag-meta mono" id="mt-context">—</span>
+          </header>
+          <div class="ag-body">
+            <div class="ag-lines" id="ln-context"></div>
+            <div class="ag-out" id="out-context"></div>
+          </div>
+        </article>
+
+        <article class="agent a-comms" id="ag-comms">
+          <header>
+            <span class="ag-emoji">💬</span>
+            <div class="ag-name"><b>Agent 3 · Communication</b><small>mid tier · SMS &amp; email scan for social engineering</small></div>
+            <span class="ag-status" id="st-comms">queued</span>
+            <span class="ag-meta mono" id="mt-comms">—</span>
+          </header>
+          <div class="ag-body">
+            <div class="ag-lines" id="ln-comms"></div>
+            <div class="ag-out" id="out-comms"></div>
+          </div>
+        </article>
+
+        <article class="agent a-judge" id="ag-judge">
+          <header>
+            <span class="ag-emoji">⚖️</span>
+            <div class="ag-name"><b>Agent 4 · Judge</b><small>strong tier · weighs all evidence, issues the binding verdict</small></div>
+            <span class="ag-status" id="st-judge">queued</span>
+            <span class="ag-meta mono" id="mt-judge">—</span>
+          </header>
+          <div class="ag-body">
+            <div class="ag-lines" id="ln-judge"></div>
+            <div class="ag-out" id="out-judge"></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="verdict-box hidden" id="verdictBox">
+        <div class="vb-head">
+          <span class="vb-icon" id="vbIcon">🛑</span>
+          <div class="vb-title"><b id="vbTitle">DECISION</b><small id="vbSub">—</small></div>
+        </div>
+        <div class="vb-meter"><div class="vb-fill" id="vbFill"></div></div>
+        <div class="vb-row"><span class="mono" id="vbScore">risk —/100</span><span class="vb-scale mono">0 · 55 = decline · 75 = freeze</span></div>
+        <div class="vb-factors" id="vbFactors"></div>
+      </div>
+
+      <div class="mon-foot">
+        Deterministic demo replay · live mode (<code>python main.py --live</code>) runs real LLM agents, traced in <b>Langfuse</b>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ═══════════════════ ABOUT MODAL ═══════════════════ -->
+<div class="modal-backdrop hidden" id="aboutModal">
+  <div class="modal">
+    <div class="modal-head">
+      <b>How the multi-agent pipeline works</b>
+      <button class="pm-close" id="btnCloseAbout">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Every incoming payment passes through four specialised agents before the bank approves or declines it. Cheap agents run first and filter; the expensive judge only sees cases worth deciding.</p>
+      <div class="am-grid">
+        <div class="am-card"><span>🔍</span><b>1 · Triage Agent</b><p>Screens the transaction against 90 days of history: amount vs typical spend, merchant category risk, first-time country, time of day, velocity. Emits a 0–10 suspicion score.</p></div>
+        <div class="am-card"><span>📍</span><b>2 · Context Agent</b><p>Cross-checks the cardholder's phone GPS trail with the transaction location. Catches "impossible travel" — the card used 5,000 km away from where the phone is.</p></div>
+        <div class="am-card"><span>💬</span><b>3 · Communication Agent</b><p>Scans recent SMS/email for phishing, urgency pressure and typosquatted domains, and links them to the payment when they precede it by under 48 h.</p></div>
+        <div class="am-card"><span>⚖️</span><b>4 · Judge Agent</b><p>Weighs every piece of evidence into a 0–100 risk score. &lt; 55 approve · ≥ 55 decline · ≥ 75 decline and freeze the card instantly.</p></div>
+      </div>
+      <p class="am-note"><b>Honesty note:</b> this hosted page replays the <i>deterministic risk engine</i> (the same rules shipped in <code>src/engine.py</code>) so it works with zero API keys. The repo also contains the real LLM-agent implementation (OpenRouter + Langfuse tracing) — run <code>python main.py --scenario scenarios/stolen_wallet.json --live</code>.</p>
+      <p class="am-note">Inspired by a real incident: the author's wallet was stolen in London and the thief immediately tried a foreign-exchange purchase in an African country — the issuer froze the card within seconds. That's the flagship scenario. <span class="syn">All personas &amp; transactions on this page are synthetic.</span></p>
+    </div>
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
